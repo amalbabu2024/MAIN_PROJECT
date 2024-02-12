@@ -5,12 +5,35 @@ from django.contrib import messages
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import get_user_model
 from .models import User, Civilian, Coordinator
-from .models import Manager,Organization
+from .models import Manager,Organization,TeamLeader,TeamMember
 
 
 
 def index(request):
     return render(request,'index.html')
+
+def admindashboard(request):
+    if not request.user.is_superuser:
+        return redirect('home')  # Redirect non-admin users
+
+    User = get_user_model()
+    users = User.objects.all()
+    civilians = Civilian.objects.all()
+    coordinators = Coordinator.objects.all()
+    managers = Manager.objects.all()
+    team_leaders = TeamLeader.objects.all()
+    team_members = TeamMember.objects.all()
+    
+    context = {
+        'users': users,
+        'civilians': civilians,
+        'coordinators': coordinators,
+        'managers': managers,
+        'team_leaders': team_leaders,
+        'team_members': team_members,
+    }
+    return render(request, 'admindashboard.html', context)
+
 
 def civreg(request):
     if request.method == 'POST':
@@ -81,6 +104,33 @@ def managerreg(request):
     organizations = Organization.objects.all()
     return render(request, 'signup_manager.html', {'organizations': organizations})
 
+def team_leader_registration(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        organization_id = request.POST.get('organization')
+
+        if User.objects.filter(username=username).exists():
+            messages.success(request, "Username is already taken.")
+            return render(request, 'signup_team_leader.html')
+
+        user = User(username=username, email=email, is_team_leader=True)
+        user.set_password(password)
+        user.save()
+
+        organization = None
+        if organization_id:
+            organization = Organization.objects.get(OrganizationID=organization_id)
+
+        team_leader = TeamLeader(user=user, organization=organization)
+        team_leader.save()
+
+        return redirect('/managerdashboard')  # Redirect to appropriate dashboard
+
+    organizations = Organization.objects.all()
+    return render(request, 'signup_team_leader.html', {'organizations': organizations})
+
 
 def login(request):
     if request.method == 'POST':
@@ -92,18 +142,29 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             
-            if user.is_civilian:
+            if user.is_admin:
+                return redirect('admindashboard')
+            elif user.is_civilian:
                 return redirect('civilhome')  # Redirect to civilian home page
             elif user.is_coordinator:
                 return redirect('coorhome')  # Redirect to coordinator home page
             elif user.is_manager:
                 return redirect('manager_dashboard')
+            elif user.team_leader:
+                return redirect('team_leader_dashboard')
+            elif user.team_member:
+                return redirect('team_member_dashboard')
             else:
-                return redirect('admindashboard')  # Redirect to admin dashboard or any other appropriate admin page
+                return redirect('log')  
         else:
             messages.error(request, "Username or Password is Incorrect.")
     
     return render(request, 'login.html')
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='login')
+def admin_home(request):
+    return render(request, 'admindashboard.html')
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='login')
@@ -120,6 +181,16 @@ def coordinator_home(request):
 def manager_home(request):
     return render(request, 'manager_dashboard.html')
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='login')
+def team_leader_home(request):
+    return render(request, 'team_leader_dashboard.html')
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required(login_url='login')
+def team_member_home(request):
+    return render(request, 'team_member_dashboard.html')
+
 def logo(request):
     # if request.user.is_authentcated:
     logout(request)
@@ -127,40 +198,7 @@ def logo(request):
 
 
 
-def admindashboard(request):
-    # You can add logic here to fetch data or perform other admin-related tasks
-    return render(request, 'admindashboard.html')
 
-def admindashboard(request):
-    if not request.user.is_superuser:
-        return redirect('home')  # Redirect non-admin users
-
-    users = User.objects.all()  # Query all users
-    return render(request, 'admindashboard.html', {'users': users})
-
-def admindashboard(request):
-    civilians = Civilian.objects.all()
-    return render(request, 'admindashboard.html', {'civilians': civilians})
-
-
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import get_user_model
-from .models import Civilian, Coordinator
-
-def admindashboard(request):
-    User = get_user_model()
-    users = User.objects.all()
-    civilians = Civilian.objects.all()
-    coordinators = Coordinator.objects.all()
-    
-    context = {
-        'users': users,
-        'civilians': civilians,
-        'coordinators': coordinators,
-    }
-    return render(request, 'admindashboard.html', context)
 
 from django.shortcuts import render
 from .models import User
@@ -768,12 +806,6 @@ def view_civilian_request(request):
 
 
 
-
-from django.shortcuts import render
-
-def manager_dashboard(request):
-    # Add logic here to retrieve data for the manager dashboard if needed
-    return render(request, 'manager_dashboard.html')
 
 
 from django.shortcuts import render, redirect

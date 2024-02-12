@@ -19,7 +19,6 @@ class User(AbstractUser):
     is_manager = models.BooleanField(default=False)
     is_team_leader = models.BooleanField(default=False)
     is_team_member = models.BooleanField(default=False)
-    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
     
     def __str__(self):
         roles = []
