@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from .views import send_help_request, view_help_requests, edit_help_request, delete_help_request
 from .views import set_request_status
 from .views import volunteer_request, volunteer_request_success, manage_volunteer_requests,view_volunteer_request,view_civilian_request
-from .views import add_team_leader
+
 
 
 
@@ -64,6 +64,14 @@ urlpatterns = [
     path('admin_add_organization/', views.admin_add_organization, name='admin_add_organization'),
     path('team_leader_registration/', views.team_leader_registration, name='team_leader_registration'),
     path('teamleaderdashboard/', views.team_leader_home, name='team_leader_dashboard'),
+    path('team_member_registration/', views.team_member_registration, name='team_member_registration'),
+    path('teammemberdashboard/', views.team_member_home, name='team_member_dashboard'),
+    path('manager_profile/', views.manager_profile, name='manager_profile'),
+    path('edit_manager_profile/', views.edit_manager_profile, name='edit_manager_profile'),
+    path('team_leader_profile/', views.team_leader_profile, name='team_leader_profile'),
+    path('edit_team_leader_profile/', views.edit_team_leader_profile, name='edit_team_leader_profile'),
+    path('team_member_profile/', views.team_member_profile, name='team_member_profile'),
+    path('edit_team_member_profile/', views.edit_team_member_profile, name='edit_team_member_profile'),
 
 
 

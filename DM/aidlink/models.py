@@ -1,17 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class Organization(models.Model):
-    OrganizationID = models.AutoField(primary_key=True)
-    OrganizationName = models.CharField(max_length=100)
-    OrganizationType = models.CharField(max_length=50)
-    ContactInfo = models.CharField(max_length=100)
-    Specialization = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.OrganizationName
-
-
 class User(AbstractUser):
     is_civilian = models.BooleanField(default=False)
     is_coordinator = models.BooleanField(default=False)
@@ -220,18 +209,18 @@ class VolunteerRequest(models.Model):
 
 
     
-    
-    
-# class Organization(models.Model):
-#     OrganizationID = models.AutoField(primary_key=True)
-#     OrganizationName = models.CharField(max_length=100)
-#     OrganizationType = models.CharField(max_length=50)
-#     ContactInfo = models.CharField(max_length=100)
-#     Specialization = models.CharField(max_length=100)
+class Organization(models.Model):
+    OrganizationID = models.AutoField(primary_key=True)
+    OrganizationName = models.CharField(max_length=100)
+    OrganizationType = models.CharField(max_length=50)
+    ContactInfo = models.CharField(max_length=100)
+    Specialization = models.CharField(max_length=100)
 
-#     def __str__(self):
-#         return self.OrganizationName
+    def __str__(self):
+        return self.OrganizationName
 
+  
+    
 
 class Manager(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='manager')
