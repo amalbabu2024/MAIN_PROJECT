@@ -7,6 +7,21 @@
     <title>Add Organization</title>
     <!-- Add your CSS stylesheets here -->
     <style>
+        .main-logo {
+            margin: 29px 0;
+        }
+        
+        .main-logo>img {
+            display: inline-block;
+        }
+        
+        .main-logo>h2 {
+            display: inline-block;
+            font-size: 20px;
+            font-weight: bold;
+            margin-left: 11px;
+            color: #01d262;
+        }
         body {
             background-image: url("{% static 'img/natural-disaster-concept-with-flood.jpg' %}");
             background-size: cover;
@@ -72,6 +87,12 @@
     </style>
 </head>
 <body>
+    <a href="{% url "home" %}">
+        <div class="main-logo">
+            <img src="{% static "img/main-logo.png" %}" alt="">
+            <h2>AIDLINK</h2>
+        </div>
+    </a>
 
 <div class="container">
     <h2>Add Organization</h2>
