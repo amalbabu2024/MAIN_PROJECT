@@ -923,3 +923,53 @@ def edit_team_member_profile(request):
     return render(request, 'edit_team_member_profile.html', {'team_member': team_member})
 
 
+
+from django.shortcuts import render, redirect
+from .models import Organization_Resources
+from .forms import OrganizationResourcesForm
+from .models import Organization, User, Coordinator, Manager, TeamLeader, TeamMember
+
+def add_organization_resources(request):
+    if request.method == 'POST':
+        form = OrganizationResourcesForm(request.POST)
+        if form.is_valid():
+            user_id = request.user.id
+
+            if Coordinator.objects.filter(user_id=user_id).exists():
+                coordinator = Coordinator.objects.get(user_id=user_id)
+                organization = coordinator.organization
+            elif Manager.objects.filter(user_id=user_id).exists():
+                manager = Manager.objects.get(user_id=user_id)
+                organization = manager.organization
+            elif TeamLeader.objects.filter(user_id=user_id).exists():
+                team_leader = TeamLeader.objects.get(user_id=user_id)
+                organization = team_leader.organization
+            elif TeamMember.objects.filter(user_id=user_id).exists():
+                team_member = TeamMember.objects.get(user_id=user_id)
+                organization = team_member.organization
+            else:
+                return redirect('error')  # Handle the case where user role is not found
+            
+            # Add Organization Resources fields to the form data
+            form.instance.OrganizationID = organization
+            form.save()
+            return redirect('view_organization_resources')  # Redirect to a success page
+    else:
+        form = OrganizationResourcesForm()
+    
+    return render(request, 'add_organization_resources.html', {'form': form})
+
+
+
+from django.shortcuts import render
+from .models import Organization_Resources
+
+def view_organization_resources(request):
+    user_organization_id = request.user.team_leader.organization.OrganizationID
+    organization_resources = Organization_Resources.objects.filter(OrganizationID=user_organization_id)
+    context = {
+        'organization_resources': organization_resources
+    }
+    return render(request, 'organization_resources.html', context)
+
+

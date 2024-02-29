@@ -72,8 +72,10 @@ urlpatterns = [
     path('edit_team_leader_profile/', views.edit_team_leader_profile, name='edit_team_leader_profile'),
     path('team_member_profile/', views.team_member_profile, name='team_member_profile'),
     path('edit_team_member_profile/', views.edit_team_member_profile, name='edit_team_member_profile'),
-
-
+    path('add_organization_resources/', views.add_organization_resources, name='add_organization_resources'),
+    path('view_organization_resources/', views.view_organization_resources, name='view_organization_resources'),
+    
+    
 
     
     

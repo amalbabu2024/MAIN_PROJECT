@@ -123,3 +123,15 @@ class ManagerForm(forms.ModelForm):
     class Meta:
         model = Manager
         fields = '__all__'
+
+
+# forms.py
+
+from django import forms
+from .models import Organization_Resources
+
+class OrganizationResourcesForm(forms.ModelForm):
+    class Meta:
+        model = Organization_Resources
+        fields = ['ResourceName', 'Description', 'Quantity', 'ResourceType']
+

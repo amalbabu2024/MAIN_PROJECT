@@ -257,3 +257,28 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+
+from django.db import models
+from .models import Organization
+
+class Organization_Resources(models.Model):
+    ResourceID = models.AutoField(primary_key=True)
+    OrganizationID = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    ResourceName = models.CharField(max_length=255)
+    Description = models.TextField()
+    Quantity = models.IntegerField()
+    
+    RESOURCE_TYPE_CHOICES = (
+        ('Personnel', 'Personnel'),
+        ('Equipment', 'Equipment'),
+        ('Supplies', 'Supplies'),
+    )
+    ResourceType = models.CharField(max_length=50, choices=RESOURCE_TYPE_CHOICES)
+
+    def __str__(self):
+        return self.ResourceName
+
+
+
