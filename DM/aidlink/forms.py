@@ -135,3 +135,15 @@ class OrganizationResourcesForm(forms.ModelForm):
         model = Organization_Resources
         fields = ['ResourceName', 'Description', 'Quantity', 'ResourceType']
 
+
+
+
+# forms.py
+from django import forms
+from .models import Task
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['task_name', 'description', 'deadline']
+

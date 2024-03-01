@@ -241,6 +241,7 @@ class TeamLeader(models.Model):
     contact_email = models.EmailField(max_length=254)
     contact_phone_number = models.CharField(max_length=15)
     email = models.EmailField(max_length=254, default='default@email.com')
+    manager = models.ForeignKey(Manager, on_delete=models.CASCADE, related_name='team_leaders', blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='team_leader', blank=True, null=True)
 
     def __str__(self):
@@ -252,7 +253,8 @@ class TeamMember(models.Model):
     last_name = models.CharField(max_length=255)
     contact_email = models.EmailField(max_length=254)
     contact_phone_number = models.CharField(max_length=15)
-    email = models.EmailField(max_length=254, default='default@email.com')
+    email = models.EmailField(max_length=254, default='default@email.com', blank=True, null=True)
+    team_leader = models.ForeignKey(TeamLeader, on_delete=models.CASCADE, related_name='team_members', blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='team_member', blank=True, null=True)
 
     def __str__(self):
@@ -282,3 +284,22 @@ class Organization_Resources(models.Model):
 
 
 
+class Task(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('In Progress', 'In Progress'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    )
+    
+    task_name = models.CharField(max_length=255)
+    description = models.TextField()
+    deadline = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    assigned_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks_assigned_by')
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks_assigned_to', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+
+    def __str__(self):
+        return self.task_name

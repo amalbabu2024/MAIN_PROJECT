@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
@@ -122,8 +121,10 @@ def team_leader_registration(request):
         organization = None
         if organization_id:
             organization = Organization.objects.get(OrganizationID=organization_id)
+        
+        manager_id = request.user.id
 
-        team_leader = TeamLeader(user=user, organization=organization)
+        team_leader = TeamLeader(user=user, organization=organization, manager_id=manager_id)
         team_leader.save()
 
         return redirect('/managerdashboard')  # Redirect to appropriate dashboard
@@ -149,8 +150,10 @@ def team_member_registration(request):
         organization = None
         if organization_id:
             organization = Organization.objects.get(OrganizationID=organization_id)
+            
+        team_leader_id = request.user.id
 
-        team_member = TeamMember(user=user, organization=organization)
+        team_member = TeamMember(user=user, organization=organization, team_leader_id=team_leader_id)
         team_member.save()
 
         return redirect('/teamleaderdashboard')  # Redirect to appropriate dashboard
@@ -973,3 +976,71 @@ def view_organization_resources(request):
     return render(request, 'organization_resources.html', context)
 
 
+from django.shortcuts import render, redirect
+from .models import Task
+from .forms import TaskForm
+
+from .models import TeamLeader, TeamMember
+
+def manager_assign_task(request, user_id):
+    team_leaders = TeamLeader.objects.filter(manager_id=user_id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.assigned_by = request.user
+            task.save()
+            assigned_to_id = request.POST.get('assigned_to')
+            task.assigned_to_id = assigned_to_id
+            task.save()
+            return redirect('manager_task_list')
+    else:
+        form = TaskForm()
+    return render(request, 'manager_assign_task.html', {'form': form, 'team_leaders': team_leaders})
+
+
+
+def manager_task_list(request):
+    tasks = Task.objects.filter(assigned_by=request.user)
+    return render(request, 'manager_task_list.html', {'tasks': tasks})
+
+from django.shortcuts import render, redirect
+from .models import Task
+from .forms import TaskForm
+
+from .models import TeamLeader
+
+def team_leader_assign_task(request, user_id):
+    team_members = TeamMember.objects.filter(team_leader_id=user_id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.assigned_by = request.user
+            task.save()
+            assigned_to_id = request.POST.get('assigned_to')
+            task.assigned_to_id = assigned_to_id
+            task.save()
+            return redirect('team_leader_dashboard')
+    else:
+        form = TaskForm()
+    return render(request, 'team_leader_assign_task.html', {'form': form, 'team_members': team_members})
+
+def team_leader_task_list(request, user_id):
+    tasks_assigned_by_team_leader = Task.objects.filter(assigned_by=user_id)
+    tasks_assigned_to_team_leader = Task.objects.filter(assigned_to=user_id)
+    return render(request, 'team_leader_task_list.html', {'tasks_assigned_by_team_leader': tasks_assigned_by_team_leader, 'tasks_assigned_to_team_leader': tasks_assigned_to_team_leader})
+
+
+def team_member_task_list(request):
+    tasks_assigned_to_team_member = Task.objects.filter(assigned_to=request.user)
+    return render(request, 'team_member_task_list.html', {'tasks_assigned_to_team_member': tasks_assigned_to_team_member})
+
+
+def update_task_status(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if request.method == 'POST':
+        task.status = request.POST.get('status')
+        task.save()
+        return redirect('team_member_task_list')
+    return render(request, 'update_task_status.html', {'task': task})

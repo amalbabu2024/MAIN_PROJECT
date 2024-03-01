@@ -125,8 +125,8 @@
             <a href="/team_member_registration" class="navbar-button"><i class="fas fa-user"></i>Add Team Member</a>
             <a href="/add_organization_resources" class="navbar-button"><i class="fas fa-chart-line"></i>Add resources</a>
             <a href="/view_organization_resources" class="navbar-button"><i class="far fa-calendar-alt"></i>View Resouces</a>
-            <a href="#" class="navbar-button"><i class="fas fa-tasks"></i>Manage Projects</a>
-            <a href="#" class="navbar-button"><i class="fas fa-cog"></i>Settings</a>
+            <a href="{% url 'team_leader_assign_task' user.id %}" class="navbar-button"><i class="fas fa-file-alt"></i>Task Task</a>
+            <a href="{% url 'team_leader_task_list' user.id %}" class="navbar-button"><i class="fas fa-file-alt"></i>Task List</a>
             <a href="#" class="navbar-button"><i class="fas fa-envelope"></i>Messages</a>
             <a href="#" class="navbar-button"><i class="fas fa-bell"></i>Notifications</a>
             <!-- Add more buttons for additional functionalities -->
