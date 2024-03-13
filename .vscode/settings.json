@@ -1,0 +1,12 @@
+// {
+//     "editor.inlineSuggest.showToolbar": "always"
+// }
+
+
+
+{
+    "editor.inlineSuggest.showToolbar": "always",
+    "python.analysis.extraPaths": [
+        "D:\\MAIN_PROJECT\\DM\\my_venv\\Lib\\site-packages"
+    ]
+}
