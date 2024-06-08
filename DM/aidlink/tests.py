@@ -50,46 +50,6 @@
 # 1. login testing
 
 
-import time
-import unittest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
-class LoginTest(unittest.TestCase):
-
-    def setUp(self):
-        self.driver = webdriver.Chrome()
-
-    def test_successful_login(self):
-        self.driver.get('http://127.0.0.1:8000/accounts/login/')
-        username_input = self.driver.find_element(By.ID, 'username')
-        password_input = self.driver.find_element(By.ID, 'password')
-
-        # Replace 'valid_username' and 'valid_password' with actual credentials
-        username_input.send_keys('milton')
-        password_input.send_keys('Milton@123')
-
-        print("Entered username and password Successfully.")
-
-        login_button = self.driver.find_element(By.ID, 'login')
-        login_button.click()
-
-        time.sleep(2)  # Adjust the time as needed
-
-        print("Clicked on login button Successfully.")
-
-        # Check if redirected to the ownerpage
-        self.assertIn('http://127.0.0.1:8000/teamleaderdashboard/', self.driver.current_url.lower())
-        print("Successfully logged in.")
-
-
-
-
-
-
-# 2. Add Organization Resouces By the Team Leader
-
 # import time
 # import unittest
 # from selenium import webdriver
@@ -101,7 +61,6 @@ class LoginTest(unittest.TestCase):
 #     def setUp(self):
 #         self.driver = webdriver.Chrome()
 
-
 #     def test_successful_login(self):
 #         self.driver.get('http://127.0.0.1:8000/accounts/login/')
 #         username_input = self.driver.find_element(By.ID, 'username')
@@ -111,43 +70,84 @@ class LoginTest(unittest.TestCase):
 #         username_input.send_keys('milton')
 #         password_input.send_keys('Milton@123')
 
+#         print("Entered username and password Successfully.")
+
 #         login_button = self.driver.find_element(By.ID, 'login')
 #         login_button.click()
 
 #         time.sleep(2)  # Adjust the time as needed
 
-#         # Check if redirected to the dashboard
+#         print("Clicked on login button Successfully.")
+
+#         # Check if redirected to the ownerpage
 #         self.assertIn('http://127.0.0.1:8000/teamleaderdashboard/', self.driver.current_url.lower())
 #         print("Successfully logged in.")
 
-#         # Navigate to the "Add resources" page
-#         add_resources_link = self.driver.find_element(By.XPATH, "//a[contains(@href, '/add_organization_resources')]")
-#         add_resources_link.click()
 
-#         time.sleep(2)  # Adjust the time as needed
 
-#         # Check if redirected to the "Add resources" page
-#         self.assertIn('http://127.0.0.1:8000/add_organization_resources/', self.driver.current_url.lower())
-#         print("Successfully navigated to the 'Add resources' page.")
 
-#         # Fill out the form and submit it
-#         resource_name_input = self.driver.find_element(By.ID, 'ResourceName')
-#         description_input = self.driver.find_element(By.ID, 'Description')
-#         quantity_input = self.driver.find_element(By.ID, 'Quantity')
-#         resource_type_select = self.driver.find_element(By.ID, 'ResourceType')
 
-#         # Fill out the form fields
-#         resource_name_input.send_keys('Sample Resource')
-#         description_input.send_keys('This is a sample resource description.')
-#         quantity_input.send_keys('10')
-#         resource_type_select.send_keys('Equipment')
 
-#         # Submit the form
-#         submit_button = self.driver.find_element(By.XPATH, "//input[@type='submit']")
-#         submit_button.click()
+# 2. Add Organization Resouces By the Team Leader
 
-#         time.sleep(2)  # Adjust the time as needed
+import time
+import unittest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
-#         # Check if redirected to the dashboard or a success page
-#         self.assertIn('http://127.0.0.1:8000/view_organization_resources/', self.driver.current_url.lower())
-#         print("Successfully added the resource.")
+class LoginTest(unittest.TestCase):
+
+    def setUp(self):
+        self.driver = webdriver.Chrome()
+
+
+    def test_successful_login(self):
+        self.driver.get('http://127.0.0.1:8000/accounts/login/')
+        username_input = self.driver.find_element(By.ID, 'username')
+        password_input = self.driver.find_element(By.ID, 'password')
+
+        # Replace 'valid_username' and 'valid_password' with actual credentials
+        username_input.send_keys('milton')
+        password_input.send_keys('Milton@123')
+
+        login_button = self.driver.find_element(By.ID, 'login')
+        login_button.click()
+
+        time.sleep(2)  # Adjust the time as needed
+
+        # Check if redirected to the dashboard
+        self.assertIn('http://127.0.0.1:8000/teamleaderdashboard/', self.driver.current_url.lower())
+        print("Successfully logged in.")
+
+        # Navigate to the "Add resources" page
+        add_resources_link = self.driver.find_element(By.XPATH, "//a[contains(@href, '/add_organization_resources')]")
+        add_resources_link.click()
+
+        time.sleep(2)  # Adjust the time as needed
+
+        # Check if redirected to the "Add resources" page
+        self.assertIn('http://127.0.0.1:8000/add_organization_resources/', self.driver.current_url.lower())
+        print("Successfully navigated to the 'Add resources' page.")
+
+        # Fill out the form and submit it
+        resource_name_input = self.driver.find_element(By.ID, 'ResourceName')
+        description_input = self.driver.find_element(By.ID, 'Description')
+        quantity_input = self.driver.find_element(By.ID, 'Quantity')
+        resource_type_select = self.driver.find_element(By.ID, 'ResourceType')
+
+        # Fill out the form fields
+        resource_name_input.send_keys('Sample Resource')
+        description_input.send_keys('This is a sample resource description.')
+        quantity_input.send_keys('10')
+        resource_type_select.send_keys('Equipment')
+
+        # Submit the form
+        submit_button = self.driver.find_element(By.XPATH, "//input[@type='submit']")
+        submit_button.click()
+
+        time.sleep(2)  # Adjust the time as needed
+
+        # Check if redirected to the dashboard or a success page
+        self.assertIn('http://127.0.0.1:8000/view_organization_resources/', self.driver.current_url.lower())
+        print("Successfully added the resource.")
